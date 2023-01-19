@@ -1,7 +1,6 @@
 import telebot
 from config import keys, TOKEN
-from utils import Function, Exchange
-
+from utils import APIException, Exchange
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
@@ -23,11 +22,11 @@ def get_price(message: telebot.types.Message):
         values = message.text.split(' ')
 
         if len(values) != 3:
-            raise Function('Введите 3 параметра')
+            raise APIException('Введите 3 параметра')
 
         base, quote, amount = values
         total_base = Exchange.get_price(base, quote, amount)
-    except Function as e:
+    except APIException as e:
         bot.reply_to(message, f'Ошибка пользователя.\n{e}')
     except Exception as e:
         bot.reply_to(message, f'Не удалось обработать команду \n{e}')
